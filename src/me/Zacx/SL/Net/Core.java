@@ -21,6 +21,16 @@ public class Core {
 	
 	public Core() {
 		fh = new FileHandler();
+		startup();
+	}
+	
+	public static void main(String[] args) {
+		new Core();
+	}
+	
+	
+	public void startup() {
+		
 		System.out.println("Listening on port 4444...");
 		try (
 			ServerSocket serverSock = new ServerSocket(4444);
@@ -40,19 +50,19 @@ public class Core {
 			if (line.startsWith("auth")) {
 				String[] split = line.split(" ");
 				out.println(auth(split[1].trim(), split[2].trim()));
+				break;
 			}
 		}
 		System.out.println("Closing Socket");
 		out.close();
 		in.close();
 		client.close();
+		serverSock.close();
+		startup();
 	} catch (IOException e) {
 		e.printStackTrace();
 	}
-	}
-	
-	public static void main(String[] args) {
-		new Core();
+		
 	}
 	
 	public boolean uidFound = false;
@@ -83,6 +93,7 @@ public class Core {
 			
 			line = br.readLine();
 		}
+		br.close();
 		
 		if (!uidFound) {
 		System.out.println("Registering...");
